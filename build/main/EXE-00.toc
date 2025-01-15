@@ -69,7 +69,7 @@
  [],
  False,
  False,
- 1736801787,
+ 1736972499,
  [('run.exe',
    'c:\\Users\\dvypo\\PycharmProjects\\MVsep '
    'GUI\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',
