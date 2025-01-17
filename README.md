@@ -1,7 +1,13 @@
 # mvsep_app
 MVSep application
 
-Чтобы запустить приложение, нужно сразу передать аргументы, например:
-python main.py get_types
-python main.py create_separation --file path/to/file.mp3 --api_token your_api_token
-python main.py get_result --hash separation_hash
+```
+# Получить типы разделения
+main.exe get_types
+
+# Создать раделение с заданными параметрами
+main.exe create_separation path/to/file.mp3 your_api_token separation_type add_opt1 add_opt2
+
+# Получить результат (файлы) разделения на рабочий стол
+main.exe get_result hash
+```
