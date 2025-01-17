@@ -1,8 +1,19 @@
 import sys
 import argparse
+from typing import Union
 from mvsep_handlers import get_separation_types, create_separation, get_result
 
-def parse_arguments():
+
+def parse_args(dict_args: Union[dict, None]) -> argparse.Namespace:
+    """
+    Parse command-line arguments for configuring the model, dataset, and training parameters.
+
+    Args:
+        dict_args: Dict of command-line arguments. If None, arguments will be parsed from sys.argv.
+
+    Returns:
+        Namespace object containing parsed arguments and their values.
+    """
     parser = argparse.ArgumentParser(description="Console application for managing MVSEP separations.")
     subparsers = parser.add_subparsers(dest='command')
 
@@ -14,14 +25,26 @@ def parse_arguments():
     create_separation_parser = subparsers.add_parser('create_separation', help="Create a new separation.")
     create_separation_parser.add_argument('path_to_file', type=str, help="Path to the file to be separated.")
     create_separation_parser.add_argument('api_token', type=str, help="API token for authentication.")
-    create_separation_parser.set_defaults(func=lambda args: create_separation.create_separation(args.path_to_file, args.api_token))
+    create_separation_parser.add_argument('sep_type', type=str, help="Separation type.")
+    create_separation_parser.add_argument('add_opt1', type=str, help="Additional option 1.")
+    create_separation_parser.add_argument('add_opt2', type=str, help="Additional option 2.")
+    create_separation_parser.set_defaults(func=lambda args: create_separation.create_separation(**vars(args)))
 
     # Подкоманда для получения результата разделения
     get_result_parser = subparsers.add_parser('get_result', help="Get the result of a previously created separation.")
     get_result_parser.add_argument('hash', type=str, help="Hash of the separation to retrieve.")
-    get_result_parser.set_defaults(func=lambda args: get_result.get_result(args.hash))
+    get_result_parser.set_defaults(func=lambda args: get_result.get_result(vars(args)['hash']))
 
-    return parser.parse_args()
+    if dict_args is not None:
+        args = parser.parse_args([])
+        args_dict = vars(args)
+        args_dict.update(dict_args)
+        args = argparse.Namespace(**args_dict)
+    else:
+        args = parser.parse_args()
+
+    return args
+
 
 def manual_selection():
     while True:
@@ -40,8 +63,21 @@ def manual_selection():
             path_to_file = str(input())
             print("API token: ")
             api_token = str(input())
-            if path_to_file != '' and api_token != '':
-                print(create_separation.create_separation(path_to_file, api_token))
+            print("Separation type: ")
+            sep_type = str(input())
+            print("Additional options. If you don't select anything, the default value is 0")
+            print("Additional option 1: ")
+            add_opt1 = str(input())
+            print("Additional option 2: ")
+            add_opt2 = str(input())
+            if '' not in [path_to_file, api_token, sep_type]:
+                if add_opt1 == '':
+                    add_opt1 = '0'
+                if add_opt2 == '':
+                    add_opt2 = '0'
+                print(create_separation.create_separation(path_to_file, api_token, sep_type, add_opt1, add_opt2))
+            else:
+                print("Bad request")
         elif choice == '3':
             print("Enter hash for get separation:")
             print("Hash: ")
@@ -54,12 +90,24 @@ def manual_selection():
             print("Invalid choice. Please try again.")
 
 def main():
-    # Сначала проверяем, были ли переданы аргументы командной строки
-    if len(sys.argv) > 1:
-        args = parse_arguments()
-        args.func()
-    else:
-        manual_selection()
+    try:
+        if len(sys.argv) > 1:
+            args = parse_args(None)
+            arguments = vars(args)
+            args_to_func = []
+            for value in arguments.values():
+                args_to_func.append(value)
+            if args_to_func[0] == 'create_separation':
+                print(create_separation.create_separation(*args_to_func[1:-1]))
+            if args_to_func[0] == 'get_types':
+                get_separation_types.get_separation_types()
+            if args_to_func[0] == 'get_result':
+                get_result.get_result(args_to_func[1])
+        else:
+            print("No arguments provided. Please provide command-line arguments.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     main()
