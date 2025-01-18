@@ -1,4 +1,5 @@
 import sys
+import time
 import argparse
 from typing import Union
 from mvsep_handlers import get_separation_types, create_separation, get_result
@@ -75,7 +76,18 @@ def manual_selection():
                     add_opt1 = '0'
                 if add_opt2 == '':
                     add_opt2 = '0'
-                print(create_separation.create_separation(path_to_file, api_token, sep_type, add_opt1, add_opt2))
+                hash, response_code = create_separation.create_separation(path_to_file, api_token, sep_type, add_opt1, add_opt2)
+                print("Hash of your separation: ", hash)
+                print("Wait response from server")
+                counter = 0
+                while counter < 10:
+                    response = get_result.get_result(hash)
+                    if response:
+                        break
+                    else:
+                        counter += 1
+                        print('...')
+                        time.sleep(10)
             else:
                 print("Bad request")
         elif choice == '3':
@@ -104,7 +116,7 @@ def main():
             if args_to_func[0] == 'get_result':
                 get_result.get_result(args_to_func[1])
         else:
-            print("No arguments provided. Please provide command-line arguments.")
+            manual_selection()
     except Exception as e:
         print(f"An error occurred: {e}")
 

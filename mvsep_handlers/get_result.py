@@ -12,8 +12,10 @@ def download_file(url, filename, save_path):
         with open(os.path.join(save_path, filename), 'wb') as f:
             f.write(response.content)
         print(f"File '{filename}' uploaded successfully!")
+        return True
     else:
         print(f"There was an error loading the file '{filename}'. Status code: {response.status_code}.")
+        return False
 
 def get_result(hash):
     params = {'hash': hash}
@@ -30,6 +32,10 @@ def get_result(hash):
         for file_info in files:
             url = file_info['url'].replace('\\/', '/')  # Исправление неверного слэша
             filename = file_info['download']  # Имя файла для сохранения
-            download_file(url, filename, save_path)
+            status = download_file(url, filename, save_path)
+            if status:
+                return True
+            else:
+                return False
     else:
         print("An error occurred while retrieving file data.")
