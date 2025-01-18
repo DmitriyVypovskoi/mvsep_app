@@ -75,7 +75,6 @@ def manual_selection():
                     add_opt1 = '0'
                 if add_opt2 == '':
                     add_opt2 = '0'
-                print(create_separation.create_separation(path_to_file, api_token, sep_type, add_opt1, add_opt2))
             else:
                 print("Bad request")
         elif choice == '3':
@@ -104,7 +103,7 @@ def main():
             if args_to_func[0] == 'get_result':
                 get_result.get_result(args_to_func[1])
         else:
-            print("No arguments provided. Please provide command-line arguments.")
+            manual_selection()
     except Exception as e:
         print(f"An error occurred: {e}")
 
