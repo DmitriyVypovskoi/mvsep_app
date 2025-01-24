@@ -46,7 +46,6 @@ def parse_args(dict_args: Union[dict, None]) -> argparse.Namespace:
 
     return args
 
-
 def manual_selection():
     while True:
         print("Select a function to execute:")
@@ -77,17 +76,7 @@ def manual_selection():
                 if add_opt2 == '':
                     add_opt2 = '0'
                 hash, response_code = create_separation.create_separation(path_to_file, api_token, sep_type, add_opt1, add_opt2)
-                print("Hash of your separation: ", hash)
-                print("Wait response from server")
-                counter = 0
-                while counter < 10:
-                    response = get_result.get_result(hash)
-                    if response:
-                        break
-                    else:
-                        counter += 1
-                        print('...')
-                        time.sleep(10)
+                wait_to_response(hash)
             else:
                 print("Bad request")
         elif choice == '3':
@@ -101,6 +90,21 @@ def manual_selection():
         else:
             print("Invalid choice. Please try again.")
 
+
+def wait_to_response(hash):
+    print("Hash of your separation: ", hash)
+    print("Wait response from server")
+    counter = 0
+    while counter < 10:
+        response = get_result.get_result(hash)
+        if response:
+            break
+        else:
+            counter += 1
+            print('...')
+            time.sleep(10)
+
+
 def main():
     try:
         if len(sys.argv) > 1:
@@ -110,7 +114,8 @@ def main():
             for value in arguments.values():
                 args_to_func.append(value)
             if args_to_func[0] == 'create_separation':
-                print(create_separation.create_separation(*args_to_func[1:-1]))
+                hash, response_code = create_separation.create_separation(*args_to_func[1:-1])
+                wait_to_response(hash)
             if args_to_func[0] == 'get_types':
                 get_separation_types.get_separation_types()
             if args_to_func[0] == 'get_result':
