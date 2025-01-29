@@ -27,9 +27,9 @@ q. Quit
 Enter your choice:
 ```
 
-# Соответственно, если вы хотите получить все типы разделений - нажмите -> 1
+## Соответственно, если вы хотите получить все типы разделений - нажмите -> 1
 
-# Если вы хотите создать разделение - нажмите -> 2
+## Если вы хотите создать разделение - нажмите -> 2
 ```
 Enter some parameters for separation:
 Path to file: {путь до файла и нажмите Enter}
@@ -51,7 +51,7 @@ Wait response from server
 File '5stafamily_phantom_centre_model_mt_0_similarity.wav' uploaded successfully!
 ```
 
-# Если у вас есть хэш разделения и вы хотите скачать его - нажмите -> 3
+## Если у вас есть хэш разделения и вы хотите скачать его - нажмите -> 3
 ```
 Enter hash for get separation:
 Hash: {хэш разделения}
